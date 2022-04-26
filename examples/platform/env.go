@@ -61,17 +61,23 @@ func RenderTemplateToFile(awsEksParams AwsEksParams, fileName string) string {
 	err = tplEks.Execute(outFileName, awsEksParams)
 	if err != nil {
 		panic(err)
-		os.Exit(1)
 	}
 	return fileName
 }
 
-func CreateAwsEks(awsEksParams AwsEksParams, fileName string) {
-	manifests := RenderTemplateToFile(awsEksParams, fileName)
-	apply := exec.Command("/usr/bin/kubectl apply -f %s", manifests)
+func (awsEks AwsEksParams) CreateAwsEks(fileName string) {
+	manifests := RenderTemplateToFile(awsEks, fileName)
+	apply := exec.Command("kubectl apply -f %s", manifests)
+	//apply := exec.Command("ls")
 	if _, err := apply.Output(); err != nil {
 		fmt.Println("apply error: ", err)
 		os.Exit(1)
 	}
 
+}
+
+type test struct{ name string }
+
+func (t test) print() {
+	fmt.Println(t)
 }
